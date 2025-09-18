@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
+import { Users, FolderOpen, Clock, FileText } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, profile, loading, signOut } = useAuth();
@@ -33,13 +34,29 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-foreground">FreelanceFlow</h1>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">Welcome, {profile.name}</span>
-            <Badge variant={profile.plan === 'paid' ? 'default' : 'secondary'}>
-              {profile.plan.toUpperCase()}
-            </Badge>
-            <Button variant="outline" onClick={signOut}>
-              Sign Out
-            </Button>
+            <nav className="flex gap-2">
+              <Button variant="ghost" onClick={() => navigate('/clients')}>
+                <Users className="w-4 h-4 mr-2" />
+                Clients
+              </Button>
+              <Button variant="ghost" disabled>
+                <FolderOpen className="w-4 h-4 mr-2" />
+                Projects
+              </Button>
+              <Button variant="ghost" disabled>
+                <FileText className="w-4 h-4 mr-2" />
+                Invoices
+              </Button>
+            </nav>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Welcome, {profile.name}</span>
+              <Badge variant={profile.plan === 'paid' ? 'default' : 'secondary'}>
+                {profile.plan.toUpperCase()}
+              </Badge>
+              <Button variant="outline" onClick={signOut}>
+                Sign Out
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -49,6 +66,7 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
+              <FolderOpen className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">0</div>
@@ -58,7 +76,19 @@ const Dashboard = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">0</div>
+              <p className="text-xs text-muted-foreground">No clients yet</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Active Tasks</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">0</div>
@@ -69,6 +99,7 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Hours Logged</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">0</div>
@@ -79,6 +110,7 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Pending Invoices</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">0</div>
@@ -105,6 +137,13 @@ const Dashboard = () => {
                   <p className="text-sm text-muted-foreground">
                     Start by adding clients to organize your projects
                   </p>
+                  <Button 
+                    variant="link" 
+                    className="p-0 h-auto mt-1" 
+                    onClick={() => navigate('/clients')}
+                  >
+                    Go to Clients →
+                  </Button>
                 </div>
               </div>
               <div className="flex items-center gap-4">
