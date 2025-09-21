@@ -43,9 +43,9 @@ const Dashboard = () => {
                 <FolderOpen className="w-4 h-4 mr-2" />
                 Projects
               </Button>
-              <Button variant="ghost" disabled>
-                <FileText className="w-4 h-4 mr-2" />
-                Invoices
+              <Button variant="ghost" onClick={() => navigate('/tasks')}>
+                <Clock className="w-4 h-4 mr-2" />
+                Tasks
               </Button>
             </nav>
             <div className="flex items-center gap-2">

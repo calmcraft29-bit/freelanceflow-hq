@@ -118,6 +118,59 @@ export type Database = {
           },
         ]
       }
+      tasks: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          end_time: string | null
+          id: string
+          is_timer_running: boolean
+          name: string
+          project_id: string
+          start_time: string | null
+          status: Database["public"]["Enums"]["task_status"]
+          time_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          end_time?: string | null
+          id?: string
+          is_timer_running?: boolean
+          name: string
+          project_id: string
+          start_time?: string | null
+          status?: Database["public"]["Enums"]["task_status"]
+          time_spent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          end_time?: string | null
+          id?: string
+          is_timer_running?: boolean
+          name?: string
+          project_id?: string
+          start_time?: string | null
+          status?: Database["public"]["Enums"]["task_status"]
+          time_spent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -127,6 +180,7 @@ export type Database = {
     }
     Enums: {
       project_status: "active" | "completed"
+      task_status: "pending" | "in-progress" | "done"
       user_plan: "free" | "paid"
     }
     CompositeTypes: {
@@ -256,6 +310,7 @@ export const Constants = {
   public: {
     Enums: {
       project_status: ["active", "completed"],
+      task_status: ["pending", "in-progress", "done"],
       user_plan: ["free", "paid"],
     },
   },

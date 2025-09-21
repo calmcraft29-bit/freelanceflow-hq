@@ -283,6 +283,13 @@ export const Projects: React.FC = () => {
                           <Button
                             variant="outline"
                             size="sm"
+                            onClick={() => window.location.href = `/tasks/${project.id}`}
+                          >
+                            Tasks
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
                             onClick={() => handleEdit(project)}
                           >
                             <Edit className="w-4 h-4" />
