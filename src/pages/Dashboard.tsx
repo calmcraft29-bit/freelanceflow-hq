@@ -39,7 +39,7 @@ const Dashboard = () => {
                 <Users className="w-4 h-4 mr-2" />
                 Clients
               </Button>
-              <Button variant="ghost" disabled>
+              <Button variant="ghost" onClick={() => navigate('/projects')}>
                 <FolderOpen className="w-4 h-4 mr-2" />
                 Projects
               </Button>
