@@ -27,7 +27,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ task, projectId, onSuccess, 
     name: '',
     status: 'pending' as 'pending' | 'in-progress' | 'done',
     assigned_to: '',
-    project_id: projectId,
+    project_id: projectId || '',
   });
 
   useEffect(() => {
