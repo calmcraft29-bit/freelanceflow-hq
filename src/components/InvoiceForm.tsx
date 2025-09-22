@@ -17,9 +17,22 @@ import { Plus } from 'lucide-react';
 const invoiceSchema = z.object({
   projectId: z.string().min(1, "Project is required"),
   invoiceNumber: z.string().min(1, "Invoice number is required"),
-  hourlyRate: z.string().min(1, "Hourly rate is required"),
+  invoiceType: z.enum(["hourly", "fixed"], { required_error: "Invoice type is required" }),
+  hourlyRate: z.string().optional(),
+  fixedAmount: z.string().optional(),
   dueDate: z.string().optional(),
   notes: z.string().optional(),
+}).refine((data) => {
+  if (data.invoiceType === "hourly") {
+    return data.hourlyRate && parseFloat(data.hourlyRate) > 0;
+  }
+  if (data.invoiceType === "fixed") {
+    return data.fixedAmount && parseFloat(data.fixedAmount) > 0;
+  }
+  return false;
+}, {
+  message: "Rate or amount is required based on invoice type",
+  path: ["hourlyRate"],
 });
 
 type InvoiceFormData = z.infer<typeof invoiceSchema>;
@@ -51,7 +64,9 @@ export function InvoiceForm({ onSuccess }: InvoiceFormProps) {
     defaultValues: {
       projectId: '',
       invoiceNumber: '',
+      invoiceType: 'hourly',
       hourlyRate: '',
+      fixedAmount: '',
       dueDate: '',
       notes: '',
     },
@@ -116,8 +131,9 @@ export function InvoiceForm({ onSuccess }: InvoiceFormProps) {
       const selectedProject = projects.find(p => p.id === data.projectId);
       if (!selectedProject) throw new Error('Project not found');
 
-      const hourlyRate = parseFloat(data.hourlyRate);
-      const totalAmount = hoursWorked * hourlyRate;
+      const hourlyRate = data.invoiceType === 'hourly' ? parseFloat(data.hourlyRate || '0') : 0;
+      const fixedAmount = data.invoiceType === 'fixed' ? parseFloat(data.fixedAmount || '0') : 0;
+      const totalAmount = data.invoiceType === 'hourly' ? hoursWorked * hourlyRate : fixedAmount;
 
       const { error } = await supabase
         .from('invoices')
@@ -126,7 +142,7 @@ export function InvoiceForm({ onSuccess }: InvoiceFormProps) {
           project_id: data.projectId,
           client_id: selectedProject.client_id,
           invoice_number: data.invoiceNumber,
-          hours_worked: hoursWorked,
+          hours_worked: data.invoiceType === 'hourly' ? hoursWorked : 0,
           hourly_rate: hourlyRate,
           total_amount: totalAmount,
           due_date: data.dueDate || null,
@@ -206,6 +222,22 @@ export function InvoiceForm({ onSuccess }: InvoiceFormProps) {
             </div>
           </div>
 
+          <div>
+            <Label htmlFor="invoiceType">Invoice Type</Label>
+            <Select
+              value={form.watch('invoiceType')}
+              onValueChange={(value) => form.setValue('invoiceType', value as 'hourly' | 'fixed')}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select invoice type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hourly">Hourly Rate</SelectItem>
+                <SelectItem value="fixed">Fixed Price</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {selectedProject && (
             <Card>
               <CardHeader>
@@ -222,28 +254,49 @@ export function InvoiceForm({ onSuccess }: InvoiceFormProps) {
                     <p className="text-sm font-medium">{selectedProject.name}</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label>Hours Worked</Label>
-                    <p className="text-lg font-semibold">{hoursWorked}h</p>
+                {form.watch('invoiceType') === 'hourly' ? (
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label>Hours Worked</Label>
+                      <p className="text-lg font-semibold">{hoursWorked}h</p>
+                    </div>
+                    <div>
+                      <Label htmlFor="hourlyRate">Hourly Rate ($)</Label>
+                      <Input
+                        id="hourlyRate"
+                        type="number"
+                        step="0.01"
+                        {...form.register('hourlyRate')}
+                        placeholder="50.00"
+                      />
+                    </div>
+                    <div>
+                      <Label>Total Amount</Label>
+                      <p className="text-lg font-semibold text-primary">
+                        ${(hoursWorked * parseFloat(form.watch('hourlyRate') || '0')).toFixed(2)}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="hourlyRate">Hourly Rate ($)</Label>
-                    <Input
-                      id="hourlyRate"
-                      type="number"
-                      step="0.01"
-                      {...form.register('hourlyRate')}
-                      placeholder="50.00"
-                    />
+                ) : (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="fixedAmount">Fixed Amount ($)</Label>
+                      <Input
+                        id="fixedAmount"
+                        type="number"
+                        step="0.01"
+                        {...form.register('fixedAmount')}
+                        placeholder="1000.00"
+                      />
+                    </div>
+                    <div>
+                      <Label>Total Amount</Label>
+                      <p className="text-lg font-semibold text-primary">
+                        ${parseFloat(form.watch('fixedAmount') || '0').toFixed(2)}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <Label>Total Amount</Label>
-                    <p className="text-lg font-semibold text-primary">
-                      ${(hoursWorked * parseFloat(form.watch('hourlyRate') || '0')).toFixed(2)}
-                    </p>
-                  </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           )}
