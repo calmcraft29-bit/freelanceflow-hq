@@ -80,7 +80,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSuccess, on
       const projectData = {
         ...formData,
         user_id: user.id,
-        client_id: formData.client_id || null,
+        client_id: formData.client_id === 'no-client' ? null : formData.client_id || null,
         start_date: formData.start_date || null,
         end_date: formData.end_date || null,
       };
@@ -171,7 +171,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSuccess, on
                   <SelectValue placeholder="Select client (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No client</SelectItem>
+                  <SelectItem value="no-client">No client</SelectItem>
                   {clients.map((client) => (
                     <SelectItem key={client.id} value={client.id}>
                       {client.name}
