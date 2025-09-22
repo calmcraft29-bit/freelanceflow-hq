@@ -164,6 +164,10 @@ const Tasks: React.FC = () => {
     return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
   };
 
+  const getTotalProjectTime = () => {
+    return filteredTasks.reduce((total, task) => total + task.time_spent, 0);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'secondary';
@@ -203,6 +207,11 @@ const Tasks: React.FC = () => {
             {project && project.description && (
               <p className="text-muted-foreground">{project.description}</p>
             )}
+            <div className="mt-2">
+              <Badge variant="outline" className="text-sm">
+                Total Time: {formatTime(getTotalProjectTime())} | Tasks: {filteredTasks.length}
+              </Badge>
+            </div>
           </div>
         </div>
         <div className="flex items-center space-x-2">
