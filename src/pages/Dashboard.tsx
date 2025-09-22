@@ -47,6 +47,10 @@ const Dashboard = () => {
                 <Clock className="w-4 h-4 mr-2" />
                 Tasks
               </Button>
+              <Button variant="ghost" onClick={() => navigate('/invoices')}>
+                <FileText className="w-4 h-4 mr-2" />
+                Invoices
+              </Button>
             </nav>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Welcome, {profile.name}</span>
