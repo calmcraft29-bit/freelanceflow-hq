@@ -36,13 +36,23 @@ const Index = () => {
             <p className="text-muted-foreground mb-6">
               Join thousands of freelancers who trust FreelanceFlow to manage their business.
             </p>
-            <Button 
-              size="lg" 
-              onClick={() => navigate('/auth')}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              Sign Up Now
-            </Button>
+            <div className="flex gap-4 justify-center">
+              <Button 
+                size="lg" 
+                onClick={() => navigate('/auth')}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                Sign Up Now
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                onClick={() => navigate('/client-auth')}
+                className="border-primary/20 text-card-foreground hover:bg-primary/10"
+              >
+                Client Portal
+              </Button>
+            </div>
           </div>
         </div>
       </div>
