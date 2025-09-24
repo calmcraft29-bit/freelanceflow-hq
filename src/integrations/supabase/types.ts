@@ -14,13 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      client_sessions: {
+        Row: {
+          client_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          session_token: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          session_token: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          session_token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_sessions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           created_at: string
           email: string
           id: string
+          is_active: boolean | null
+          last_login_at: string | null
           name: string
           notes: string | null
+          password_hash: string | null
           updated_at: string
           user_id: string
         }
@@ -28,8 +63,11 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          is_active?: boolean | null
+          last_login_at?: string | null
           name: string
           notes?: string | null
+          password_hash?: string | null
           updated_at?: string
           user_id: string
         }
@@ -37,8 +75,11 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          is_active?: boolean | null
+          last_login_at?: string | null
           name?: string
           notes?: string | null
+          password_hash?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -245,7 +286,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      authenticate_client: {
+        Args: { client_email: string; client_password: string }
+        Returns: Json
+      }
+      verify_client_session: {
+        Args: { token: string }
+        Returns: Json
+      }
     }
     Enums: {
       project_status: "active" | "completed"
