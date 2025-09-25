@@ -290,6 +290,10 @@ export type Database = {
         Args: { client_email: string; client_password: string }
         Returns: Json
       }
+      set_client_password: {
+        Args: { client_email: string; new_password: string; use_hash?: boolean }
+        Returns: Json
+      }
       verify_client_session: {
         Args: { token: string }
         Returns: Json
