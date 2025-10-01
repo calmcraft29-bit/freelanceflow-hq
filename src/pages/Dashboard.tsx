@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Users, FolderOpen, Clock, FileText } from 'lucide-react';
 import { DashboardAnalytics } from '@/components/DashboardAnalytics';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { InvoiceReminders } from '@/components/InvoiceReminders';
 import { supabase } from '@/integrations/supabase/client';
 
 const Dashboard = () => {
@@ -108,7 +109,9 @@ const Dashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <InvoiceReminders />
+        
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mt-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Projects</CardTitle>

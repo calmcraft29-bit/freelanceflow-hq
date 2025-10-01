@@ -7,11 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { ProjectForm } from '@/components/ProjectForm';
-import { Plus, Edit, Trash2, Search, Filter } from 'lucide-react';
+import { ProjectFileUpload } from '@/components/ProjectFileUpload';
+import { Plus, Edit, Trash2, Search, Filter, FileText } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Project = Tables<'projects'>;
@@ -31,6 +33,7 @@ export const Projects: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [clientFilter, setClientFilter] = useState('all');
+  const [selectedProjectFiles, setSelectedProjectFiles] = useState<string | null>(null);
 
   const fetchProjects = async () => {
     if (!user) return;
@@ -287,6 +290,16 @@ export const Projects: React.FC = () => {
                           >
                             Tasks
                           </Button>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <FileText className="w-4 h-4" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[500px]">
+                              <ProjectFileUpload projectId={project.id} />
+                            </PopoverContent>
+                          </Popover>
                           <Button
                             variant="outline"
                             size="sm"

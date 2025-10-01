@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { Play, Pause, Clock } from 'lucide-react';
+import { ManualTimeEntry } from './ManualTimeEntry';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Task = Tables<'tasks'>;
@@ -150,6 +149,8 @@ export const TaskTimer: React.FC<TaskTimerProps> = ({ task, onTaskUpdate }) => {
           <span>Start</span>
         </Button>
       )}
+      
+      <ManualTimeEntry task={task} onSuccess={onTaskUpdate} />
     </div>
   );
 };
