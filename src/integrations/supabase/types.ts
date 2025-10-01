@@ -98,6 +98,7 @@ export type Database = {
           notes: string | null
           pdf_url: string | null
           project_id: string
+          reminder_sent_at: string | null
           status: string
           total_amount: number
           updated_at: string
@@ -115,6 +116,7 @@ export type Database = {
           notes?: string | null
           pdf_url?: string | null
           project_id: string
+          reminder_sent_at?: string | null
           status?: string
           total_amount?: number
           updated_at?: string
@@ -132,6 +134,7 @@ export type Database = {
           notes?: string | null
           pdf_url?: string | null
           project_id?: string
+          reminder_sent_at?: string | null
           status?: string
           total_amount?: number
           updated_at?: string
@@ -222,6 +225,50 @@ export type Database = {
         }
         Relationships: []
       }
+      project_files: {
+        Row: {
+          created_at: string | null
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          mime_type: string
+          project_id: string
+          uploaded_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          file_name: string
+          file_path: string
+          file_size: number
+          id?: string
+          mime_type: string
+          project_id: string
+          uploaded_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          mime_type?: string
+          project_id?: string
+          uploaded_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           client_id: string | null
@@ -276,6 +323,7 @@ export type Database = {
           end_time: string | null
           id: string
           is_timer_running: boolean
+          manual_time_entries: Json | null
           name: string
           project_id: string
           start_time: string | null
@@ -290,6 +338,7 @@ export type Database = {
           end_time?: string | null
           id?: string
           is_timer_running?: boolean
+          manual_time_entries?: Json | null
           name: string
           project_id: string
           start_time?: string | null
@@ -304,6 +353,7 @@ export type Database = {
           end_time?: string | null
           id?: string
           is_timer_running?: boolean
+          manual_time_entries?: Json | null
           name?: string
           project_id?: string
           start_time?: string | null
@@ -330,6 +380,18 @@ export type Database = {
       authenticate_client: {
         Args: { client_email: string; client_password: string }
         Returns: Json
+      }
+      get_overdue_invoices: {
+        Args: { user_uuid: string }
+        Returns: {
+          client_name: string
+          days_overdue: number
+          due_date: string
+          invoice_id: string
+          invoice_number: string
+          project_name: string
+          total_amount: number
+        }[]
       }
       set_client_password: {
         Args: { client_email: string; new_password: string; use_hash?: boolean }
