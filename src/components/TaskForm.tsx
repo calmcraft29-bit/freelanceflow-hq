@@ -4,6 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
@@ -28,6 +33,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ task, projectId, onSuccess, 
     status: 'pending' as 'pending' | 'in-progress' | 'done',
     assigned_to: '',
     project_id: projectId || '',
+    due_date: undefined as Date | undefined,
   });
 
   useEffect(() => {
@@ -37,6 +43,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ task, projectId, onSuccess, 
         status: task.status,
         assigned_to: task.assigned_to || '',
         project_id: task.project_id,
+        due_date: task.due_date ? new Date(task.due_date) : undefined,
       });
     }
   }, [task]);
@@ -74,9 +81,12 @@ export const TaskForm: React.FC<TaskFormProps> = ({ task, projectId, onSuccess, 
 
     try {
       const taskData = {
-        ...formData,
+        name: formData.name,
+        status: formData.status,
+        project_id: formData.project_id,
         user_id: user.id,
         assigned_to: formData.assigned_to || null,
+        due_date: formData.due_date ? formData.due_date.toISOString() : null,
       };
 
       if (task) {
@@ -159,6 +169,33 @@ export const TaskForm: React.FC<TaskFormProps> = ({ task, projectId, onSuccess, 
                 placeholder="Enter assignee name"
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Due Date (Optional)</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !formData.due_date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {formData.due_date ? format(formData.due_date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={formData.due_date}
+                  onSelect={(date) => setFormData({ ...formData, due_date: date })}
+                  initialFocus
+                  className="pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
           </div>
 
           {!projectId && (

@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { Users, FolderOpen, Clock, FileText } from 'lucide-react';
+import { Users, FolderOpen, Clock, FileText, Calendar as CalendarIcon } from 'lucide-react';
 import { DashboardAnalytics } from '@/components/DashboardAnalytics';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { InvoiceReminders } from '@/components/InvoiceReminders';
@@ -92,6 +92,10 @@ const Dashboard = () => {
               <Button variant="ghost" onClick={() => navigate('/invoices')}>
                 <FileText className="w-4 h-4 mr-2" />
                 Invoices
+              </Button>
+              <Button variant="ghost" onClick={() => navigate('/calendar')}>
+                <CalendarIcon className="w-4 h-4 mr-2" />
+                Calendar
               </Button>
             </nav>
             <div className="flex items-center gap-2">

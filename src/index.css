@@ -103,3 +103,53 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* React Big Calendar Styles */
+.rbc-calendar {
+  @apply bg-card text-card-foreground;
+}
+
+.rbc-header {
+  @apply border-border py-2 font-semibold;
+}
+
+.rbc-today {
+  @apply bg-accent/50;
+}
+
+.rbc-off-range-bg {
+  @apply bg-muted/30;
+}
+
+.rbc-event {
+  @apply px-2 py-1 text-sm;
+}
+
+.rbc-event-label {
+  @apply text-xs;
+}
+
+.rbc-toolbar button {
+  @apply px-3 py-1 rounded border transition-colors;
+}
+
+.rbc-toolbar button:hover {
+  @apply bg-accent;
+}
+
+.rbc-toolbar button.rbc-active {
+  @apply bg-primary text-primary-foreground;
+}
+
+.rbc-month-view,
+.rbc-time-view {
+  @apply border border-border rounded-lg;
+}
+
+.rbc-time-slot {
+  @apply border-border;
+}
+
+.rbc-day-slot .rbc-time-slot {
+  @apply border-t border-border;
+}

@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      calendar_integrations: {
+        Row: {
+          access_token: string
+          calendar_id: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          provider: string
+          refresh_token: string | null
+          token_expires_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          calendar_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          provider: string
+          refresh_token?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          calendar_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          provider?: string
+          refresh_token?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       client_sessions: {
         Row: {
           client_id: string
@@ -320,6 +359,7 @@ export type Database = {
         Row: {
           assigned_to: string | null
           created_at: string
+          due_date: string | null
           end_time: string | null
           id: string
           is_timer_running: boolean
@@ -335,6 +375,7 @@ export type Database = {
         Insert: {
           assigned_to?: string | null
           created_at?: string
+          due_date?: string | null
           end_time?: string | null
           id?: string
           is_timer_running?: boolean
@@ -350,6 +391,7 @@ export type Database = {
         Update: {
           assigned_to?: string | null
           created_at?: string
+          due_date?: string | null
           end_time?: string | null
           id?: string
           is_timer_running?: boolean
