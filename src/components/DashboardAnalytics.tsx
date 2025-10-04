@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LineChart, Line, Legend } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Clock, TrendingUp, Users, AlertTriangle } from 'lucide-react';
@@ -16,6 +16,8 @@ interface ClientTimeData {
 interface MonthlyEarnings {
   month: string;
   earnings: number;
+  expenses: number;
+  profit: number;
 }
 
 interface AIInsight {
@@ -78,16 +80,31 @@ export const DashboardAnalytics = () => {
         .eq('user_id', user?.id)
         .order('invoice_date', { ascending: true });
 
+      // Fetch monthly expenses
+      const { data: expenseData } = await supabase
+        .from('expenses')
+        .select('amount, expense_date')
+        .eq('user_id', user?.id)
+        .order('expense_date', { ascending: true });
+
       const monthlyData = invoiceData?.reduce((acc: any, invoice) => {
         const month = new Date(invoice.invoice_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-        if (!acc[month]) acc[month] = 0;
-        acc[month] += parseFloat(String(invoice.total_amount || 0));
+        if (!acc[month]) acc[month] = { earnings: 0, expenses: 0 };
+        acc[month].earnings += parseFloat(String(invoice.total_amount || 0));
         return acc;
-      }, {});
+      }, {}) || {};
 
-      const processedMonthlyData = Object.entries(monthlyData || {}).map(([month, earnings]) => ({
+      expenseData?.forEach((expense) => {
+        const month = new Date(expense.expense_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        if (!monthlyData[month]) monthlyData[month] = { earnings: 0, expenses: 0 };
+        monthlyData[month].expenses += parseFloat(String(expense.amount || 0));
+      });
+
+      const processedMonthlyData = Object.entries(monthlyData).map(([month, data]: [string, any]) => ({
         month,
-        earnings: earnings as number
+        earnings: data.earnings,
+        expenses: data.expenses,
+        profit: data.earnings - data.expenses
       }));
 
       setMonthlyEarnings(processedMonthlyData);
@@ -190,6 +207,14 @@ export const DashboardAnalytics = () => {
       label: "Earnings",
       color: "hsl(var(--primary))",
     },
+    expenses: {
+      label: "Expenses",
+      color: "hsl(var(--destructive))",
+    },
+    profit: {
+      label: "Profit",
+      color: "hsl(var(--accent))",
+    },
   };
 
   return (
@@ -260,21 +285,24 @@ export const DashboardAnalytics = () => {
           </CardContent>
         </Card>
 
-        {/* Monthly Earnings Bar Chart */}
+        {/* Monthly Earnings, Expenses & Profit Chart */}
         <Card>
           <CardHeader>
-            <CardTitle>Monthly Earnings</CardTitle>
-            <CardDescription>Revenue generated each month</CardDescription>
+            <CardTitle>Financial Overview</CardTitle>
+            <CardDescription>Monthly earnings, expenses and profit</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyEarnings}>
+                <LineChart data={monthlyEarnings}>
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Bar dataKey="earnings" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                  <Line type="monotone" dataKey="earnings" stroke="hsl(var(--primary))" strokeWidth={2} />
+                  <Line type="monotone" dataKey="expenses" stroke="hsl(var(--destructive))" strokeWidth={2} />
+                  <Line type="monotone" dataKey="profit" stroke="hsl(var(--accent))" strokeWidth={2} />
+                  <Legend />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                </BarChart>
+                </LineChart>
               </ResponsiveContainer>
             </ChartContainer>
           </CardContent>

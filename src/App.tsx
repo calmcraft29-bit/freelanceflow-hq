@@ -13,6 +13,7 @@ import Projects from "./pages/Projects";
 import Tasks from "./pages/Tasks";
 import Invoices from "./pages/Invoices";
 import Calendar from "./pages/Calendar";
+import Expenses from "./pages/Expenses";
 import ClientAuth from "./pages/ClientAuth";
 import ClientDashboard from "./pages/ClientDashboard";
 import NotFound from "./pages/NotFound";
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/calendar" element={<Calendar />} />
+              <Route path="/expenses" element={<Expenses />} />
               <Route path="/client-auth" element={<ClientAuth />} />
               <Route path="/client-portal" element={<ClientDashboard />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
