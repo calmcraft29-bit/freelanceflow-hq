@@ -9,8 +9,6 @@ import { DashboardAnalytics } from '@/components/DashboardAnalytics';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { InvoiceReminders } from '@/components/InvoiceReminders';
 import { supabase } from '@/integrations/supabase/client';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/AppSidebar';
 
 const Dashboard = () => {
   const { user, profile, loading, signOut } = useAuth();
@@ -73,44 +71,66 @@ const Dashboard = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <AppSidebar />
-        
-        <div className="flex-1 flex flex-col">
-          <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-            <div className="flex items-center justify-between px-6 py-4">
-              <div className="flex items-center gap-4">
-                <SidebarTrigger className="-ml-2" />
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  FreelanceFlow
-                </h1>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50">
-                  <span className="text-sm font-medium text-foreground">{profile.name}</span>
-                  <Badge variant={profile.plan === 'paid' ? 'default' : 'secondary'} className="text-xs">
-                    {profile.plan.toUpperCase()}
-                  </Badge>
-                </div>
-                <ThemeToggle />
-                <Button variant="outline" size="sm" onClick={signOut}>
-                  Sign Out
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-8">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                FreelanceFlow
+              </h1>
+              <nav className="hidden lg:flex gap-1">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/clients')} className="text-muted-foreground hover:text-foreground">
+                  <Users className="w-4 h-4 mr-2" />
+                  Clients
                 </Button>
-              </div>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/projects')} className="text-muted-foreground hover:text-foreground">
+                  <FolderOpen className="w-4 h-4 mr-2" />
+                  Projects
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/tasks')} className="text-muted-foreground hover:text-foreground">
+                  <Clock className="w-4 h-4 mr-2" />
+                  Tasks
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/invoices')} className="text-muted-foreground hover:text-foreground">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Invoices
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/calendar')} className="text-muted-foreground hover:text-foreground">
+                  <CalendarIcon className="w-4 h-4 mr-2" />
+                  Calendar
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/expenses')} className="text-muted-foreground hover:text-foreground">
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  Expenses
+                </Button>
+              </nav>
             </div>
-          </header>
-
-          <main className="flex-1 overflow-auto">
-            <div className="container mx-auto px-6 py-8">
-              <div className="mb-8">
-                <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">Dashboard</h2>
-                <p className="text-muted-foreground">Welcome back, {profile.name}. Here's your business overview.</p>
+            <div className="flex items-center gap-3">
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50">
+                <span className="text-sm font-medium text-foreground">{profile.name}</span>
+                <Badge variant={profile.plan === 'paid' ? 'default' : 'secondary'} className="text-xs">
+                  {profile.plan.toUpperCase()}
+                </Badge>
               </div>
+              <ThemeToggle />
+              <Button variant="outline" size="sm" onClick={signOut}>
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
 
-              <InvoiceReminders />
-              
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 mt-6">
+      <main className="container mx-auto px-6 py-8">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">Dashboard</h2>
+          <p className="text-muted-foreground">Welcome back, {profile.name}. Here's your business overview.</p>
+        </div>
+
+        <InvoiceReminders />
+        
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 mt-6">
           <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Projects</CardTitle>
@@ -258,11 +278,8 @@ const Dashboard = () => {
             </Card>
           </div>
         )}
-            </div>
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+      </main>
+    </div>
   );
 };
 
