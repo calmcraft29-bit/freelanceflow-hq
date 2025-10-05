@@ -27,7 +27,13 @@ interface AIInsight {
   value?: string;
 }
 
-const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))'];
+const COLORS = [
+  'hsl(var(--chart-1))', 
+  'hsl(var(--chart-2))', 
+  'hsl(var(--chart-3))', 
+  'hsl(var(--chart-4))', 
+  'hsl(var(--chart-5))'
+];
 
 export const DashboardAnalytics = () => {
   const { user } = useAuth();
@@ -220,32 +226,53 @@ export const DashboardAnalytics = () => {
   return (
     <div className="space-y-6">
       {/* AI Productivity Assistant */}
-      <Card>
+      <Card className="border-t-4 border-t-primary">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
-            AI Productivity Assistant
-          </CardTitle>
-          <CardDescription>
-            Smart insights to boost your freelance productivity
-          </CardDescription>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <CardTitle className="text-xl">AI Productivity Assistant</CardTitle>
+              <CardDescription>
+                Smart insights to optimize your workflow
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
             {aiInsights.map((insight, index) => (
-              <div key={index} className="p-4 rounded-lg border border-border bg-card">
-                <div className="flex items-center gap-2 mb-2">
-                  {insight.type === 'overdue' && <AlertTriangle className="h-4 w-4 text-destructive" />}
-                  {insight.type === 'profitable' && <Users className="h-4 w-4 text-primary" />}
-                  {insight.type === 'deepwork' && <Clock className="h-4 w-4 text-accent-foreground" />}
-                  <h4 className="font-medium text-sm">{insight.title}</h4>
+              <div 
+                key={index} 
+                className="p-5 rounded-xl border bg-gradient-to-br from-card to-muted/30 hover:shadow-md transition-all"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    {insight.type === 'overdue' && (
+                      <div className="h-8 w-8 rounded-lg bg-destructive/10 flex items-center justify-center">
+                        <AlertTriangle className="h-4 w-4 text-destructive" />
+                      </div>
+                    )}
+                    {insight.type === 'profitable' && (
+                      <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Users className="h-4 w-4 text-primary" />
+                      </div>
+                    )}
+                    {insight.type === 'deepwork' && (
+                      <div className="h-8 w-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <Clock className="h-4 w-4 text-accent" />
+                      </div>
+                    )}
+                  </div>
                   {insight.value && (
-                    <Badge variant={insight.type === 'overdue' ? 'destructive' : 'default'}>
+                    <Badge variant={insight.type === 'overdue' ? 'destructive' : 'default'} className="font-semibold">
                       {insight.value}
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-muted-foreground">{insight.description}</p>
+                <h4 className="font-semibold text-sm mb-1.5">{insight.title}</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">{insight.description}</p>
               </div>
             ))}
           </div>
