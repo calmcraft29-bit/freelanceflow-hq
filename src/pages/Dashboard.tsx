@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
-import { Users, FolderOpen, Clock, FileText, Calendar as CalendarIcon, DollarSign } from 'lucide-react';
+import { Users, FolderOpen, Clock, FileText, Calendar as CalendarIcon, DollarSign, Search, Bell, Gift, TrendingUp, Eye, ArrowUp, ArrowDown } from 'lucide-react';
 import { DashboardAnalytics } from '@/components/DashboardAnalytics';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { InvoiceReminders } from '@/components/InvoiceReminders';
 import { supabase } from '@/integrations/supabase/client';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
 
 const Dashboard = () => {
   const { user, profile, loading, signOut } = useAuth();
@@ -71,215 +74,182 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                FreelanceFlow
-              </h1>
-              <nav className="hidden lg:flex gap-1">
-                <Button variant="ghost" size="sm" onClick={() => navigate('/clients')} className="text-muted-foreground hover:text-foreground">
-                  <Users className="w-4 h-4 mr-2" />
-                  Clients
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => navigate('/projects')} className="text-muted-foreground hover:text-foreground">
-                  <FolderOpen className="w-4 h-4 mr-2" />
-                  Projects
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => navigate('/tasks')} className="text-muted-foreground hover:text-foreground">
-                  <Clock className="w-4 h-4 mr-2" />
-                  Tasks
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => navigate('/invoices')} className="text-muted-foreground hover:text-foreground">
-                  <FileText className="w-4 h-4 mr-2" />
-                  Invoices
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => navigate('/calendar')} className="text-muted-foreground hover:text-foreground">
-                  <CalendarIcon className="w-4 h-4 mr-2" />
-                  Calendar
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => navigate('/expenses')} className="text-muted-foreground hover:text-foreground">
-                  <DollarSign className="w-4 h-4 mr-2" />
-                  Expenses
-                </Button>
-              </nav>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50">
-                <span className="text-sm font-medium text-foreground">{profile.name}</span>
-                <Badge variant={profile.plan === 'paid' ? 'default' : 'secondary'} className="text-xs">
-                  {profile.plan.toUpperCase()}
-                </Badge>
-              </div>
-              <ThemeToggle />
-              <Button variant="outline" size="sm" onClick={signOut}>
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-6 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">Dashboard</h2>
-          <p className="text-muted-foreground">Welcome back, {profile.name}. Here's your business overview.</p>
-        </div>
-
-        <InvoiceReminders />
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-background">
+        <AppSidebar />
         
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 mt-6">
-          <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Projects</CardTitle>
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <FolderOpen className="h-5 w-5 text-primary" />
+        <div className="flex-1 flex flex-col w-full">
+          <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex h-16 items-center gap-4 px-6">
+              <SidebarTrigger />
+              <div className="flex-1 flex items-center gap-4">
+                <div className="relative w-full max-w-md">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search"
+                    className="pl-9 bg-muted/50 border-0"
+                  />
+                </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-foreground">{stats.totalProjects}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {stats.totalProjects === 0 ? 'No projects yet' : `Active projects`}
-              </p>
-            </CardContent>
-          </Card>
+              <div className="flex items-center gap-3">
+                <Button variant="ghost" size="icon" className="relative">
+                  <Gift className="h-5 w-5 text-muted-foreground" />
+                </Button>
+                <Button variant="ghost" size="icon" className="relative">
+                  <Bell className="h-5 w-5 text-muted-foreground" />
+                </Button>
+                <ThemeToggle />
+                <div className="flex items-center gap-2 pl-3 border-l">
+                  <div className="text-right">
+                    <p className="text-sm font-medium">{profile.name}</p>
+                    <p className="text-xs text-muted-foreground">{profile.plan === 'paid' ? 'Premium' : 'Free Plan'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
 
-          <Card className="border-l-4 border-l-accent hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Clients</CardTitle>
-              <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center">
-                <Users className="h-5 w-5 text-accent" />
+          <main className="flex-1 p-6 space-y-6">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm">
+                  <CalendarIcon className="h-4 w-4 mr-2" />
+                  Oct 18 - Nov 18
+                </Button>
+                <Button variant="outline" size="sm">
+                  Monthly
+                </Button>
+                <Button variant="outline" size="sm">
+                  Filter
+                </Button>
+                <Button variant="outline" size="sm">
+                  Export
+                </Button>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-foreground">{stats.totalClients}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {stats.totalClients === 0 ? 'No clients yet' : `Total clients`}
-              </p>
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card className="border-l-4 border-l-chart-3 hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Active Tasks</CardTitle>
-              <div className="h-10 w-10 rounded-full bg-[hsl(var(--chart-3))]/10 flex items-center justify-center">
-                <Clock className="h-5 w-5 text-[hsl(var(--chart-3))]" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-foreground">{stats.activeTasks}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {stats.activeTasks === 0 ? 'No active tasks' : `In progress`}
-              </p>
-            </CardContent>
-          </Card>
+            <InvoiceReminders />
 
-          <Card className="border-l-4 border-l-chart-4 hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Hours Logged</CardTitle>
-              <div className="h-10 w-10 rounded-full bg-[hsl(var(--chart-4))]/10 flex items-center justify-center">
-                <Clock className="h-5 w-5 text-[hsl(var(--chart-4))]" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-foreground">{stats.hoursLogged}h</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {stats.hoursLogged === 0 ? 'No time tracked' : `Total tracked`}
-              </p>
-            </CardContent>
-          </Card>
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <div className="flex items-center gap-2">
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                    <CardTitle className="text-sm font-medium text-muted-foreground">Total Projects</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{stats.totalProjects}</div>
+                  <div className="flex items-center gap-1 text-xs text-success mt-1">
+                    <ArrowUp className="h-3 w-3" />
+                    <span>15.6%</span>
+                  </div>
+                </CardContent>
+              </Card>
 
-          <Card className="border-l-4 border-l-chart-5 hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Pending</CardTitle>
-              <div className="h-10 w-10 rounded-full bg-[hsl(var(--chart-5))]/10 flex items-center justify-center">
-                <FileText className="h-5 w-5 text-[hsl(var(--chart-5))]" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-foreground">{stats.pendingInvoices}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {stats.pendingInvoices === 0 ? 'All paid' : `Invoices`}
-              </p>
-            </CardContent>
-          </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">${stats.hoursLogged * 50}</div>
+                  <div className="flex items-center gap-1 text-xs text-destructive mt-1">
+                    <ArrowDown className="h-3 w-3" />
+                    <span>34.0%</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <CardTitle className="text-sm font-medium text-muted-foreground">Active Tasks</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{stats.activeTasks}</div>
+                  <div className="flex items-center gap-1 text-xs text-success mt-1">
+                    <ArrowUp className="h-3 w-3" />
+                    <span>24.2%</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <DashboardAnalytics />
+
+            {stats.totalClients === 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Getting Started</CardTitle>
+                  <CardDescription>
+                    Welcome to FreelanceFlow! Here's what you can do to get started:
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
+                      1
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Add Your First Client</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Start by adding clients to organize your projects
+                      </p>
+                      <Button 
+                        variant="link" 
+                        className="p-0 h-auto mt-1" 
+                        onClick={() => navigate('/clients')}
+                      >
+                        Go to Clients →
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-medium">
+                      2
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Create a Project</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Set up projects for your clients with details and timelines
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-medium">
+                      3
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Track Your Time</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Add tasks and track time spent on each project
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-medium">
+                      4
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Generate Invoices</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Create professional invoices from your tracked time
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </main>
         </div>
-
-        {/* Analytics Dashboard */}
-        <div className="mt-8">
-          <DashboardAnalytics />
-        </div>
-
-        {/* Getting Started Section */}
-        {stats.totalClients === 0 && (
-          <div className="mt-8">
-            <Card>
-              <CardHeader>
-                <CardTitle>Getting Started</CardTitle>
-                <CardDescription>
-                  Welcome to FreelanceFlow! Here's what you can do to get started:
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-                    1
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Add Your First Client</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Start by adding clients to organize your projects
-                    </p>
-                    <Button 
-                      variant="link" 
-                      className="p-0 h-auto mt-1" 
-                      onClick={() => navigate('/clients')}
-                    >
-                      Go to Clients →
-                    </Button>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-medium">
-                    2
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Create a Project</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Set up projects for your clients with details and timelines
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-medium">
-                    3
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Track Your Time</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Add tasks and track time spent on each project
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-medium">
-                    4
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Generate Invoices</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Create professional invoices from your tracked time
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </main>
-    </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
