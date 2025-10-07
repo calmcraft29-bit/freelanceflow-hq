@@ -1,17 +1,12 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { 
   LayoutDashboard, 
-  CreditCard, 
   Users, 
   MessageSquare, 
-  Package, 
   FileText, 
-  TrendingUp, 
-  Zap,
   Settings,
   Shield,
   HelpCircle,
-  ChevronDown,
   FolderOpen,
   Clock,
   Calendar as CalendarIcon,
@@ -29,8 +24,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 
 const generalItems = [
@@ -48,8 +41,6 @@ const toolsItems = [
 
 const supportItems = [
   { title: "Settings", url: "/settings", icon: Settings },
-  { title: "Security", url: "/security", icon: Shield },
-  { title: "Help", url: "/help", icon: HelpCircle },
 ];
 
 export function AppSidebar() {
@@ -67,39 +58,39 @@ export function AppSidebar() {
   const getNavClass = (active: boolean) =>
     active
       ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-      : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground";
+      : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground";
 
   const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar className="border-r border-sidebar-border">
-      <div className="p-4 border-b border-sidebar-border">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center">
-            <span className="text-background font-bold text-lg">F</span>
+    <Sidebar className="border-r border-sidebar-border bg-sidebar-background">
+      <div className="h-16 flex items-center px-6 border-b border-sidebar-border">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center">
+            <span className="text-sidebar-primary-foreground font-bold text-base">F</span>
           </div>
           {!isCollapsed && (
-            <span className="font-bold text-sidebar-foreground text-lg">FreelanceFlow</span>
+            <span className="font-semibold text-sidebar-foreground text-base tracking-tight">FreelanceFlow</span>
           )}
         </div>
       </div>
 
-      <SidebarContent>
+      <SidebarContent className="px-3 py-4">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs text-muted-foreground uppercase tracking-wider px-3">
+          <SidebarGroupLabel className="text-xs font-semibold text-sidebar-foreground/50 uppercase tracking-wider px-3 mb-2">
             General
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {generalItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="rounded-lg">
                     <NavLink
                       to={item.url}
                       className={getNavClass(isActive(item.url))}
                     >
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      {!isCollapsed && <span className="text-sm">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -108,21 +99,21 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs text-muted-foreground uppercase tracking-wider px-3">
+        <SidebarGroup className="mt-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-sidebar-foreground/50 uppercase tracking-wider px-3 mb-2">
             Tools
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {toolsItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="rounded-lg">
                     <NavLink
                       to={item.url}
                       className={getNavClass(isActive(item.url))}
                     >
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      {!isCollapsed && <span className="text-sm">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -131,21 +122,21 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs text-muted-foreground uppercase tracking-wider px-3">
+        <SidebarGroup className="mt-6">
+          <SidebarGroupLabel className="text-xs font-semibold text-sidebar-foreground/50 uppercase tracking-wider px-3 mb-2">
             Support
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {supportItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="rounded-lg">
                     <NavLink
                       to={item.url}
                       className={getNavClass(isActive(item.url))}
                     >
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      {!isCollapsed && <span className="text-sm">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -157,26 +148,20 @@ export function AppSidebar() {
 
       {!isCollapsed && (
         <SidebarFooter className="p-4 border-t border-sidebar-border">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 p-2 rounded-lg bg-sidebar-accent/50">
-              <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                <Users className="h-4 w-4 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sidebar-foreground truncate">
-                  {profile?.name || "User"}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {profile?.plan === 'paid' ? 'Premium' : 'Free Plan'}
-                </p>
-              </div>
-              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-sidebar-accent/50">
+            <div className="w-9 h-9 rounded-full bg-sidebar-primary/10 flex items-center justify-center">
+              <span className="text-sm font-semibold text-sidebar-primary">
+                {profile?.name?.charAt(0).toUpperCase() || "U"}
+              </span>
             </div>
-            {profile?.plan !== 'paid' && (
-              <Button variant="outline" size="sm" className="w-full">
-                Upgrade Plan
-              </Button>
-            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-sidebar-foreground truncate">
+                {profile?.name || "User"}
+              </p>
+              <p className="text-xs text-sidebar-foreground/60">
+                {profile?.plan === 'paid' ? 'Premium Account' : 'Free Account'}
+              </p>
+            </div>
           </div>
         </SidebarFooter>
       )}
