@@ -9,7 +9,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import ClientForm from '@/components/ClientForm';
-import { Search, Trash2, Mail, FileText, ArrowLeft } from 'lucide-react';
+import { Search, Trash2, Mail, FileText, ArrowLeft, Key, Copy, Eye, EyeOff } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 
 interface Client {
   id: string;
@@ -25,9 +27,23 @@ const Clients = () => {
   const [filteredClients, setFilteredClients] = useState<Client[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [resetPasswordClient, setResetPasswordClient] = useState<Client | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const generateSecurePassword = () => {
+    const length = 12;
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    return password;
+  };
 
   const fetchClients = async () => {
     if (!user) return;
@@ -95,6 +111,45 @@ const Clients = () => {
         description: error.message,
       });
     }
+  };
+
+  const handleResetPassword = async () => {
+    if (!resetPasswordClient || !newPassword) return;
+
+    setResetting(true);
+    try {
+      const { error } = await supabase.rpc('set_client_password', {
+        client_email: resetPasswordClient.email,
+        new_password: newPassword,
+        use_hash: false
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Password reset",
+        description: "Client password has been updated successfully.",
+      });
+
+      setResetPasswordClient(null);
+      setNewPassword('');
+      setShowNewPassword(false);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error resetting password",
+        description: error.message,
+      });
+    }
+    setResetting(false);
+  };
+
+  const copyPassword = async () => {
+    await navigator.clipboard.writeText(newPassword);
+    toast({
+      title: "Copied!",
+      description: "Password copied to clipboard",
+    });
   };
 
   if (loading) {
@@ -182,6 +237,17 @@ const Clients = () => {
                   <div className="flex justify-between items-center">
                     <div className="flex gap-2">
                       <ClientForm client={client} onSuccess={fetchClients} />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setResetPasswordClient(client);
+                          setNewPassword(generateSecurePassword());
+                        }}
+                      >
+                        <Key className="w-4 h-4 mr-1" />
+                        Reset Password
+                      </Button>
                     </div>
                     
                     <AlertDialog>
@@ -221,6 +287,77 @@ const Clients = () => {
           </div>
         )}
       </main>
+
+      <Dialog open={!!resetPasswordClient} onOpenChange={() => {
+        setResetPasswordClient(null);
+        setNewPassword('');
+        setShowNewPassword(false);
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset Client Password</DialogTitle>
+            <DialogDescription>
+              Generate a new password for {resetPasswordClient?.name}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>New Password</Label>
+              <div className="flex gap-2">
+                <div className="flex-1 relative">
+                  <Input
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="font-mono"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-1 top-1/2 -translate-y-1/2"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                  >
+                    {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={copyPassword}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setNewPassword(generateSecurePassword())}
+            >
+              Generate New Password
+            </Button>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setResetPasswordClient(null);
+                setNewPassword('');
+                setShowNewPassword(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleResetPassword} disabled={resetting || !newPassword}>
+              {resetting ? 'Resetting...' : 'Reset Password'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
