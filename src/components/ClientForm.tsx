@@ -167,7 +167,7 @@ const ClientForm = ({ client, onSuccess }: ClientFormProps) => {
 
   return (
     <>
-      <Dialog open={open} onOpenChange={handleClose}>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           {client ? (
             <Button variant="outline" size="sm">
