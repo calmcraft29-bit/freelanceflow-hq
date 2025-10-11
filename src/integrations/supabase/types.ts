@@ -89,36 +89,45 @@ export type Database = {
         Row: {
           created_at: string
           email: string
+          hashed_password: string | null
           id: string
           is_active: boolean | null
+          last_login: string | null
           last_login_at: string | null
           name: string
           notes: string | null
           password_hash: string | null
+          portal_access: boolean | null
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
           email: string
+          hashed_password?: string | null
           id?: string
           is_active?: boolean | null
+          last_login?: string | null
           last_login_at?: string | null
           name: string
           notes?: string | null
           password_hash?: string | null
+          portal_access?: boolean | null
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
           email?: string
+          hashed_password?: string | null
           id?: string
           is_active?: boolean | null
+          last_login?: string | null
           last_login_at?: string | null
           name?: string
           notes?: string | null
           password_hash?: string | null
+          portal_access?: boolean | null
           updated_at?: string
           user_id?: string
         }
